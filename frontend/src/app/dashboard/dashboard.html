@@ -1,0 +1,57 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="welcome-section">
+      <h1>Welcome back, {{ fullName }}! 👋</h1>
+      <p class="subtitle">Let's make this month count!</p>
+    </div>
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </header>
+
+  <!-- Month Motivation Card -->
+  <div class="motivation-card">
+    <div class="month-badge">{{ currentMonth }}</div>
+    <p class="quote">"{{ monthlyQuote }}"</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-value">{{ totalGoals }}</div>
+      <div class="stat-label">Active Goals</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-value">{{ currentStreak }}</div>
+      <div class="stat-label">Day Streak</div>
+    </div>
+
+    <div class="stat-card highlight">
+      <div class="stat-icon">📅</div>
+      <div class="stat-value">{{ daysLeftInMonth }}</div>
+      <div class="stat-label">Days Left This Month</div>
+    </div>
+  </div>
+
+  <!-- Current Date Card -->
+  <div class="date-card">
+    <div class="date-left">
+      <div class="today-label">Today</div>
+      <div class="current-date">{{ currentDate }}</div>
+    </div>
+    <div class="date-right">
+      <div class="days-remaining">
+        <span class="big-number">{{ daysLeftInMonth }}</span>
+        <span class="small-text">days until {{ nextMonth }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Button -->
+  <button class="create-goal-btn" (click)="onCreateGoal()">
+    <span class="plus-icon">+</span>
+    Create New Goal
+  </button>
+</div>

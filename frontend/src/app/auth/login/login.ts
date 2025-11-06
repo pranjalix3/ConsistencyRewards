@@ -34,8 +34,7 @@ export class Login {
           localStorage.setItem('fullName', response.fullName);
           
           console.log('Login successful!', response);
-          // TODO: Navigate to dashboard
-          alert('Login successful!');
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           console.error('Login failed', error);
