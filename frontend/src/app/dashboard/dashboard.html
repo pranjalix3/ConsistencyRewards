@@ -29,9 +29,9 @@
     </div>
 
     <div class="stat-card highlight">
-      <div class="stat-icon">📅</div>
-      <div class="stat-value">{{ daysLeftInMonth }}</div>
-      <div class="stat-label">Days Left This Month</div>
+      <div class="stat-icon">🎁</div>
+      <div class="stat-value">{{ totalWishlistItems }}</div>
+      <div class="stat-label">Wishlist Items</div>
     </div>
   </div>
 
@@ -54,4 +54,8 @@
     <span class="plus-icon">+</span>
     Create New Goal
   </button>
+  <button class="add-wishlist-btn" (click)="onAddWishlist()">
+      <span class="plus-icon">+</span>
+      Add to Wishlist
+    </button>
 </div>

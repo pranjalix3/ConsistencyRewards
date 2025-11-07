@@ -170,7 +170,7 @@
 }
 
 /* Create Goal Button */
-.create-goal-btn {
+.create-goal-btn, .add-wishlist-btn {
   width: 100%;
   padding: 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -188,7 +188,15 @@
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.create-goal-btn:hover {
+.create-goal-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.add-wishlist-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.create-goal-btn:hover, .add-wishlist-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
@@ -213,5 +221,9 @@
 
   .days-remaining {
     text-align: center;
+  }
+
+  .action-buttons {
+    grid-template-columns: 1fr;
   }
 }

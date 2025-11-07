@@ -17,6 +17,7 @@ export class Dashboard implements OnInit {
   monthlyQuote = '';
   totalGoals = 0;
   currentStreak = 0;
+  totalWishlistItems = 0;
 
   // Monthly quotes
   private monthlyQuotes: { [key: string]: string } = {
@@ -80,4 +81,10 @@ export class Dashboard implements OnInit {
     // TODO: Navigate to create goal page (Phase 3)
     alert('Create Goal feature coming in Phase 3!');
   }
+
+  onAddWishlist() {
+  // TODO: Navigate to add wishlist page (Phase 3)
+  alert('Add to Wishlist feature coming in Phase 3!');
+ }
+ 
 }
