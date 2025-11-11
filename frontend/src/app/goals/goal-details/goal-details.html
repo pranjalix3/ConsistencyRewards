@@ -1,0 +1,100 @@
+<div class="goal-details-container">
+  <div class="loading" *ngIf="loading">
+    Loading goal details...
+  </div>
+
+  <div class="goal-details-card" *ngIf="!loading && goal">
+    <!-- Header -->
+    <div class="header">
+      <div class="title-section">
+        <h2>{{ goal.title }}</h2>
+        <p class="description">{{ goal.description || 'No description' }}</p>
+      </div>
+      <button class="back-btn" (click)="goBack()">← Back to Goals</button>
+    </div>
+
+    <!-- Streak Banner -->
+    <div class="streak-banner">
+      <div class="streak-item">
+        <span class="streak-icon">🔥</span>
+        <div>
+          <div class="streak-value">{{ goal.currentStreak }}</div>
+          <div class="streak-label">Current Streak</div>
+        </div>
+      </div>
+      <div class="streak-item">
+        <span class="streak-icon">🏆</span>
+        <div>
+          <div class="streak-value">{{ goal.longestStreak }}</div>
+          <div class="streak-label">Longest Streak</div>
+        </div>
+      </div>
+      <div class="streak-item">
+        <span class="streak-icon">📊</span>
+        <div>
+          <div class="streak-value">{{ totalCheckIns }}</div>
+          <div class="streak-label">Total Check-ins</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Check-in Button -->
+    <div class="checkin-section">
+      <button 
+        class="checkin-btn" 
+        [class.checked-in]="hasCheckedInToday"
+        [disabled]="hasCheckedInToday"
+        (click)="onCheckIn()">
+        <span class="checkin-icon">{{ hasCheckedInToday ? '✓' : '✓' }}</span>
+        {{ hasCheckedInToday ? 'Checked In Today!' : 'Check In for Today' }}
+      </button>
+      <p class="checkin-hint" *ngIf="!hasCheckedInToday">
+        Mark today as complete to continue your streak!
+      </p>
+      <p class="checkin-success" *ngIf="hasCheckedInToday">
+        Great job! Come back tomorrow to keep your streak going! 🎉
+      </p>
+    </div>
+
+    <!-- Calendar -->
+    <div class="calendar-section">
+      <div class="calendar-header">
+        <button class="nav-btn" (click)="previousMonth()">←</button>
+        <h3>{{ currentMonthName }} {{ currentYear }}</h3>
+        <button class="nav-btn" (click)="nextMonth()">→</button>
+      </div>
+
+      <div class="calendar-grid">
+        <div class="calendar-day-header" *ngFor="let day of weekDays">
+          {{ day }}
+        </div>
+        
+        <div 
+          class="calendar-day" 
+          *ngFor="let day of calendarDays"
+          [class.other-month]="!day.isCurrentMonth"
+          [class.checked-in]="day.isCheckedIn"
+          [class.today]="day.isToday">
+          <span class="day-number">{{ day.date }}</span>
+          <span class="check-mark" *ngIf="day.isCheckedIn">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rewards Section (Placeholder) -->
+    <div class="rewards-section">
+      <h3>🎁 Rewards Earned</h3>
+      <div class="rewards-placeholder">
+        <p>No rewards earned yet. Keep up your consistency!</p>
+        <small>Complete 10 consecutive days to earn your first reward.</small>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-section">
+      <button class="delete-btn" (click)="onDeleteGoal()">
+        🗑️ Delete Goal
+      </button>
+    </div>
+  </div>
+</div>

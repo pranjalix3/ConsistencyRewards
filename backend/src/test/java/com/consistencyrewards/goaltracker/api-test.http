@@ -29,3 +29,63 @@ Content-Type: application/json
   "password": "john123",
   "fullName": "John Doe"
 }
+
+### Create a new goal
+POST http://localhost:8080/api/goals
+Content-Type: application/json
+X-User-Email: test@example.com
+
+{
+  "title": "Exercise Daily",
+  "description": "Do 30 minutes of exercise every day"
+}
+
+### Create another goal
+POST http://localhost:8080/api/goals
+Content-Type: application/json
+X-User-Email: test@example.com
+
+{
+  "title": "Learn Java",
+  "description": "Study Java for 1 hour daily"
+}
+
+### Get all goals for user
+GET http://localhost:8080/api/goals
+X-User-Email: test@example.com
+
+### Get specific goal by ID (change ID to match your created goal)
+GET http://localhost:8080/api/goals/1
+X-User-Email: test@example.com
+
+### Delete a goal (change ID as needed)
+DELETE http://localhost:8080/api/goals/1
+X-User-Email: test@example.com
+
+### Create a check-in for today
+POST http://localhost:8080/api/checkins
+Content-Type: application/json
+X-User-Email: test@example.com
+
+{
+  "goalId": 1,
+  "checkInDate": "2025-11-08"
+}
+
+### Create check-in for yesterday
+POST http://localhost:8080/api/checkins
+Content-Type: application/json
+X-User-Email: test@example.com
+
+{
+  "goalId": 1,
+  "checkInDate": "2025-11-07"
+}
+
+### Get check-ins for November 2025
+GET http://localhost:8080/api/checkins/goal/1/month/2025/11
+X-User-Email: test@example.com
+
+### Get goal to see updated streaks
+GET http://localhost:8080/api/goals/1
+X-User-Email: test@example.com

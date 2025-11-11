@@ -1,6 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+
+interface Goal {
+  id: number;
+  title: string;
+  description: string;
+  isActive: boolean;
+  currentStreak: number;
+  longestStreak: number;
+  createdAt: string;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -35,7 +46,7 @@ export class Dashboard implements OnInit {
     'December': 'End the year strong. Your future self will thank you.'
   };
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit() {
     // Get user info from localStorage
@@ -62,9 +73,42 @@ export class Dashboard implements OnInit {
     // Set monthly quote
     this.monthlyQuote = this.monthlyQuotes[this.currentMonth];
 
-    // TODO: These will be fetched from backend later
-    this.totalGoals = 0;
-    this.currentStreak = 0;
+    // Fetch real stats from backend
+    this.loadStats();
+  }
+
+  loadStats() {
+    const userEmail = localStorage.getItem('email');
+    if (!userEmail) {
+      return;
+    }
+
+    // Fetch goals
+    this.http.get<Goal[]>('http://localhost:8080/api/goals', {
+      headers: { 'X-User-Email': userEmail }
+    }).subscribe({
+      next: (goals) => {
+        this.totalGoals = goals.length;
+        
+        // Calculate highest current streak among all goals
+        if (goals.length > 0) {
+          this.currentStreak = Math.max(...goals.map(g => g.currentStreak));
+        } else {
+          this.currentStreak = 0;
+        }
+        
+        console.log('Dashboard stats loaded:', {
+          totalGoals: this.totalGoals,
+          currentStreak: this.currentStreak
+        });
+      },
+      error: (error) => {
+        console.error('Failed to load stats', error);
+      }
+    });
+
+    // TODO: Fetch wishlist items count when wishlist is implemented
+    this.totalWishlistItems = 0;
   }
 
   onLogout() {
@@ -78,13 +122,15 @@ export class Dashboard implements OnInit {
   }
 
   onCreateGoal() {
-    // TODO: Navigate to create goal page (Phase 3)
-    alert('Create Goal feature coming in Phase 3!');
+    this.router.navigate(['/goals/create']);
   }
 
   onAddWishlist() {
-  // TODO: Navigate to add wishlist page (Phase 3)
-  alert('Add to Wishlist feature coming in Phase 3!');
- }
- 
+    // TODO: Navigate to add wishlist page (Phase 3)
+    alert('Add to Wishlist feature coming in Phase 3!');
+  }
+
+  onGoToGoals() {
+    this.router.navigate(['/goals']);
+  }
 }

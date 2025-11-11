@@ -1,0 +1,53 @@
+<div class="goals-list-container">
+  <div class="goals-list-card">
+    <div class="header">
+      <h2>My Goals</h2>
+      <div class="header-actions">
+        <button class="create-btn" (click)="onCreateGoal()">+ New Goal</button>
+        <button class="back-btn" (click)="goBack()">← Dashboard</button>
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="loading">
+      Loading goals...
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && goals.length === 0">
+      <div class="empty-icon">🎯</div>
+      <h3>No goals yet!</h3>
+      <p>Create your first goal to start tracking your consistency.</p>
+      <button class="create-btn-large" (click)="onCreateGoal()">
+        Create Your First Goal
+      </button>
+    </div>
+
+    <div class="goals-grid" *ngIf="!loading && goals.length > 0">
+      <div class="goal-card" *ngFor="let goal of goals" (click)="onGoalClick(goal.id)">
+        <div class="goal-header">
+          <h3>{{ goal.title }}</h3>
+          <span class="streak-badge">{{ goal.currentStreak }} 🔥</span>
+        </div>
+        <p class="goal-description">{{ goal.description || 'No description' }}</p>
+        <div class="goal-footer">
+          <div class="stat">
+            <span class="stat-label">Current Streak</span>
+            <span class="stat-value">{{ goal.currentStreak }} days</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Longest Streak</span>
+            <span class="stat-value">{{ goal.longestStreak }} days</span>
+          </div>
+        <div class="stat">
+            <span class="stat-label">Rewards Earned</span>
+            <span class="stat-value rewards">0 🎁</span>
+        </div>
+        </div>
+        <div class="goal-actions">
+          <button class="delete-btn" (click)="onDeleteGoal($event, goal.id)">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

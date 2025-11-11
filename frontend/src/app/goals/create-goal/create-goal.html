@@ -1,0 +1,50 @@
+<div class="create-goal-container">
+  <div class="create-goal-card">
+    <div class="header">
+      <h2>Create New Goal</h2>
+      <button class="back-btn" (click)="goBack()">← Back</button>
+    </div>
+    
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">Goal Title *</label>
+        <input 
+          type="text" 
+          id="title" 
+          name="title"
+          [(ngModel)]="title" 
+          placeholder="e.g., Exercise Daily"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea 
+          id="description" 
+          name="description"
+          [(ngModel)]="description" 
+          placeholder="Describe your goal in detail..."
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="info-box">
+        <span class="info-icon">💡</span>
+        <p>Track your consistency and earn rewards by checking in daily!</p>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="!title">
+        Create Goal
+      </button>
+    </form>
+  </div>
+</div>
