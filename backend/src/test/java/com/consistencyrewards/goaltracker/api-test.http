@@ -89,3 +89,55 @@ X-User-Email: test@example.com
 ### Get goal to see updated streaks
 GET http://localhost:8080/api/goals/1
 X-User-Email: test@example.com
+
+### Create a consistency reward (small/cheap item)
+POST http://localhost:8080/api/wishlist
+Content-Type: application/json
+X-User-Email: test@example.com
+
+{
+  "itemName": "Coffee",
+  "description": "Treat myself to a fancy coffee",
+  "price": 5.99,
+  "rewardType": "CONSISTENCY"
+}
+
+### Create a completion reward (big/expensive item)
+POST http://localhost:8080/api/wishlist
+Content-Type: application/json
+X-User-Email: test@example.com
+
+{
+  "itemName": "New Headphones",
+  "description": "Sony WH-1000XM5",
+  "price": 399.99,
+  "rewardType": "COMPLETION"
+}
+
+### Create another consistency reward
+POST http://localhost:8080/api/wishlist
+Content-Type: application/json
+X-User-Email: test@example.com
+
+{
+  "itemName": "Movie Ticket",
+  "description": "Watch a movie at the cinema",
+  "price": 15.00,
+  "rewardType": "CONSISTENCY"
+}
+
+### Get all wishlist items
+GET http://localhost:8080/api/wishlist
+X-User-Email: test@example.com
+
+### Get specific wishlist item (change ID as needed)
+GET http://localhost:8080/api/wishlist/1
+X-User-Email: test@example.com
+
+### Claim a wishlist item (change ID as needed - will fail because not earned yet)
+POST http://localhost:8080/api/wishlist/1/claim
+X-User-Email: test@example.com
+
+### Delete a wishlist item (change ID as needed)
+DELETE http://localhost:8080/api/wishlist/1
+X-User-Email: test@example.com

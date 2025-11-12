@@ -1,0 +1,113 @@
+<div class="wishlist-container">
+  <div class="loading" *ngIf="loading">
+    Loading wishlist...
+  </div>
+
+  <div class="wishlist-card" *ngIf="!loading">
+    <!-- Header -->
+    <div class="header">
+      <h2>My Wishlist 🎁</h2>
+      <div class="header-actions">
+        <button class="add-btn" (click)="onAddItem()">+ Add Item</button>
+        <button class="back-btn" (click)="goBack()">← Dashboard</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-value">{{ totalItems }}</span>
+        <span class="stat-label">Total Items</span>
+      </div>
+      <div class="stat-item earned">
+        <span class="stat-value">{{ earnedItems }}</span>
+        <span class="stat-label">Earned</span>
+      </div>
+      <div class="stat-item claimed">
+        <span class="stat-value">{{ claimedItems }}</span>
+        <span class="stat-label">Claimed</span>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="wishlistItems.length === 0">
+      <div class="empty-icon">🎁</div>
+      <h3>Your wishlist is empty</h3>
+      <p>Add items you want to earn as rewards for your consistency!</p>
+      <button class="add-btn-large" (click)="onAddItem()">
+        Add Your First Item
+      </button>
+    </div>
+
+    <!-- Wishlist Items -->
+    <div class="wishlist-grid" *ngIf="wishlistItems.length > 0">
+      <div 
+        class="wishlist-item" 
+        *ngFor="let item of wishlistItems"
+        [class.earned]="item.isEarned"
+        [class.claimed]="item.isClaimed">
+        
+        <!-- Status Badge -->
+        <div class="status-badge" *ngIf="item.isClaimed">
+          ✓ Claimed
+        </div>
+        <div class="status-badge earned-badge" *ngIf="item.isEarned && !item.isClaimed">
+          🎉 Earned!
+        </div>
+        <div class="status-badge pending-badge" *ngIf="!item.isEarned">
+          ⏳ Pending
+        </div>
+
+        <!-- Item Content -->
+        <div class="item-icon">
+          {{ item.rewardType === 'CONSISTENCY' ? '🔥' : '🏆' }}
+        </div>
+        
+        <h3>{{ item.itemName }}</h3>
+        <p class="item-description">{{ item.description || 'No description' }}</p>
+        
+        <div class="item-price">${{ item.price.toFixed(2) }}</div>
+        
+        <div class="item-type">
+          <span class="type-badge" [class.consistency]="item.rewardType === 'CONSISTENCY'">
+            {{ item.rewardType === 'CONSISTENCY' ? 'Consistency Reward' : 'Completion Reward' }}
+          </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="item-actions">
+          <button 
+            class="claim-btn" 
+            *ngIf="item.isEarned && !item.isClaimed"
+            (click)="onClaimItem(item.id)">
+            Claim Now
+          </button>
+          
+          <button 
+            class="delete-btn" 
+            (click)="onDeleteItem(item.id)">
+            🗑️ Delete
+          </button>
+        </div>
+
+        <!-- Earned/Claimed Dates -->
+        <div class="item-dates" *ngIf="item.isEarned">
+          <small *ngIf="item.earnedAt">Earned: {{ formatDate(item.earnedAt) }}</small>
+          <small *ngIf="item.claimedAt">Claimed: {{ formatDate(item.claimedAt) }}</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box" *ngIf="wishlistItems.length > 0">
+      <span class="info-icon">💡</span>
+      <div>
+        <p><strong>How to earn rewards:</strong></p>
+        <ul>
+          <li>🔥 <strong>Consistency Rewards:</strong> Maintain a 10-day streak on any goal</li>
+          <li>🏆 <strong>Completion Rewards:</strong> Complete a goal (coming soon!)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

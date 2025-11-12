@@ -107,8 +107,17 @@ export class Dashboard implements OnInit {
       }
     });
 
-    // TODO: Fetch wishlist items count when wishlist is implemented
-    this.totalWishlistItems = 0;
+      // Fetch wishlist items count
+      this.http.get<any[]>('http://localhost:8080/api/wishlist', {
+        headers: { 'X-User-Email': userEmail }
+      }).subscribe({
+        next: (items) => {
+          this.totalWishlistItems = items.length;
+        },
+        error: (error) => {
+          console.error('Failed to load wishlist count', error);
+        }
+      });
   }
 
   onLogout() {
@@ -126,11 +135,14 @@ export class Dashboard implements OnInit {
   }
 
   onAddWishlist() {
-    // TODO: Navigate to add wishlist page (Phase 3)
-    alert('Add to Wishlist feature coming in Phase 3!');
+    this.router.navigate(['/wishlist/add']);
   }
 
   onGoToGoals() {
     this.router.navigate(['/goals']);
+  }
+
+  onGoToWishlist() {
+  this.router.navigate(['/wishlist']);
   }
 }

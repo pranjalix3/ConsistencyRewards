@@ -1,0 +1,95 @@
+<div class="add-wishlist-container">
+  <div class="add-wishlist-card">
+    <div class="header">
+      <h2>Add to Wishlist</h2>
+      <button class="back-btn" (click)="goBack()">← Back</button>
+    </div>
+    
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="itemName">Item Name *</label>
+        <input 
+          type="text" 
+          id="itemName" 
+          name="itemName"
+          [(ngModel)]="itemName" 
+          placeholder="e.g., Coffee, New Shoes, Gaming Console"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea 
+          id="description" 
+          name="description"
+          [(ngModel)]="description" 
+          placeholder="Describe what you want..."
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="price">Price ($) *</label>
+        <input 
+          type="number" 
+          id="price" 
+          name="price"
+          [(ngModel)]="price" 
+          placeholder="0.00"
+          step="0.01"
+          min="0"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Reward Type *</label>
+        <div class="reward-type-options">
+          <div 
+            class="reward-option" 
+            [class.selected]="rewardType === 'CONSISTENCY'"
+            (click)="rewardType = 'CONSISTENCY'">
+            <div class="option-icon">🔥</div>
+            <div class="option-content">
+              <div class="option-title">Consistency Reward</div>
+              <div class="option-description">
+                Earn this by maintaining a 10-day streak. Best for smaller, affordable rewards.
+              </div>
+            </div>
+          </div>
+
+          <div 
+            class="reward-option" 
+            [class.selected]="rewardType === 'COMPLETION'"
+            (click)="rewardType = 'COMPLETION'">
+            <div class="option-icon">🏆</div>
+            <div class="option-content">
+              <div class="option-title">Completion Reward</div>
+              <div class="option-description">
+                Earn this by completing a goal. Perfect for bigger, more expensive items.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <span class="info-icon">💡</span>
+        <p><strong>Tip:</strong> Choose consistency rewards for items under $20 and completion rewards for bigger purchases!</p>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="!itemName || !price || !rewardType">
+        Add to Wishlist
+      </button>
+    </form>
+  </div>
+</div>

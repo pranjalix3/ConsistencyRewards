@@ -23,6 +23,9 @@ public class CheckInService {
     @Autowired
     private GoalRepository goalRepository;
 
+    @Autowired
+    private RewardsService rewardsService;
+
     // Create a check-in
     public CheckInResponse createCheckIn(CheckInRequest request, String userEmail) {
         // Find the goal
@@ -51,6 +54,9 @@ public class CheckInService {
 
         // Update goal streaks
         updateGoalStreaks(goal);
+
+        // Check if user has earned any rewards
+        rewardsService.checkAndUpdateRewards(userEmail);
 
         return new CheckInResponse(saved.getId(), saved.getGoal().getId(), saved.getCheckInDate());
     }
