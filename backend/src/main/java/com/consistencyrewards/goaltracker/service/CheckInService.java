@@ -2,6 +2,7 @@ package com.consistencyrewards.goaltracker.service;
 
 import com.consistencyrewards.goaltracker.dto.CheckInRequest;
 import com.consistencyrewards.goaltracker.dto.CheckInResponse;
+import com.consistencyrewards.goaltracker.dto.WishlistItemResponse;
 import com.consistencyrewards.goaltracker.model.CheckIn;
 import com.consistencyrewards.goaltracker.model.Goal;
 import com.consistencyrewards.goaltracker.repository.CheckInRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +47,9 @@ public class CheckInService {
             throw new RuntimeException("Already checked in for this date");
         }
 
+        // Get streak BEFORE creating check-in
+        int streakBefore = goal.getCurrentStreak();
+
         // Create check-in
         CheckIn checkIn = new CheckIn();
         checkIn.setGoal(goal);
@@ -55,10 +60,24 @@ public class CheckInService {
         // Update goal streaks
         updateGoalStreaks(goal);
 
-        // Check if user has earned any rewards
-        rewardsService.checkAndUpdateRewards(userEmail);
+        // Get streak AFTER creating check-in
+        int streakAfter = goal.getCurrentStreak();
 
-        return new CheckInResponse(saved.getId(), saved.getGoal().getId(), saved.getCheckInDate());
+        // Check if user has earned any rewards
+        List<WishlistItemResponse> newlyEarnedRewards = rewardsService.checkAndUpdateRewards(userEmail);
+
+        // Check if this check-in resulted in unlocking consistency rewards
+        // (streak went from 9 to 10, or stayed at 10+ but new rewards were unlocked)
+        Boolean celebrateConsistency = (streakBefore == 9 && streakAfter == 10) ||
+                (!newlyEarnedRewards.isEmpty());
+
+        return new CheckInResponse(
+                saved.getId(),
+                saved.getGoal().getId(),
+                saved.getCheckInDate(),
+                celebrateConsistency,
+                newlyEarnedRewards
+        );
     }
 
     // Get check-ins for a goal in a specific month
@@ -78,7 +97,8 @@ public class CheckInService {
                 goal, startDate, endDate);
 
         return checkIns.stream()
-                .map(c -> new CheckInResponse(c.getId(), c.getGoal().getId(), c.getCheckInDate()))
+                .map(c -> new CheckInResponse(c.getId(), c.getGoal().getId(), c.getCheckInDate(), false,  // No celebration for historical check-ins
+                        new ArrayList<>()  ))
                 .collect(Collectors.toList());
     }
 

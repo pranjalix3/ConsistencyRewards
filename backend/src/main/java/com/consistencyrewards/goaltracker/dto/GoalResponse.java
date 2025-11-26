@@ -15,4 +15,7 @@ public class GoalResponse {
     private Integer currentStreak;
     private Integer longestStreak;
     private LocalDateTime createdAt;
+    private String monthYear;
+    private Boolean isArchived;
+    private Integer finalStreak;
 }

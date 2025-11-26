@@ -13,6 +13,15 @@
       <button class="back-btn" (click)="goBack()">← Back to Goals</button>
     </div>
 
+    <!-- Celebration Popup -->
+    <app-celebration-popup
+      [isVisible]="showCelebration"
+      [message]="celebrationMessage"
+      [rewards]="earnedRewards"
+      (close)="onCelebrationClose()"
+      (rewardClaimed)="onRewardClaimed()">
+    </app-celebration-popup>
+
     <!-- Streak Banner -->
     <div class="streak-banner">
       <div class="streak-item">

@@ -9,6 +9,7 @@ import com.consistencyrewards.goaltracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,10 @@ public class GoalService {
 
     // Create a new goal
     public GoalResponse createGoal(String userEmail, CreateGoalRequest request) {
+        // Set current month and year
+        LocalDateTime now = LocalDateTime.now();
+        String currentMonthYear = now.getMonth().toString() + " " + now.getYear();
+
         // Find user by email
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -35,6 +40,8 @@ public class GoalService {
         goal.setIsActive(true);
         goal.setCurrentStreak(0);
         goal.setLongestStreak(0);
+        goal.setMonthYear(currentMonthYear);
+        goal.setIsArchived(false);
 
         // Save goal
         Goal savedGoal = goalRepository.save(goal);
@@ -48,7 +55,7 @@ public class GoalService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<Goal> goals = goalRepository.findByUser(user);
+        List<Goal> goals = goalRepository.findByUserAndIsArchived(user, false);
 
         return goals.stream()
                 .map(this::mapToResponse)
@@ -90,7 +97,10 @@ public class GoalService {
                 goal.getIsActive(),
                 goal.getCurrentStreak(),
                 goal.getLongestStreak(),
-                goal.getCreatedAt()
+                goal.getCreatedAt(),
+                goal.getMonthYear(),
+                goal.getIsArchived(),
+                goal.getFinalStreak()
         );
     }
 }

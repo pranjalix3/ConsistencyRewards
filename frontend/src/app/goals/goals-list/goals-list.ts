@@ -61,6 +61,10 @@ export class GoalsList implements OnInit {
     this.router.navigate(['/goals', goalId]);
   }
 
+  onViewPrevious() {
+  this.router.navigate(['/goals/previous']);
+   }
+
   onDeleteGoal(event: Event, goalId: number) {
     event.stopPropagation(); // Prevent card click when clicking delete
     

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+import confetti from 'canvas-confetti';
+import { CelebrationPopup } from '../../shared/celebration-popup/celebration-popup';
 
 interface Goal {
   id: number;
@@ -26,9 +28,27 @@ interface CalendarDay {
   isToday: boolean;
 }
 
+interface CheckIn {
+  id: number;
+  goalId: number;
+  checkInDate: string;
+  celebrateConsistency?: boolean;
+  newlyEarnedRewards?: WishlistItem[];
+}
+
+interface WishlistItem {
+  id: number;
+  itemName: string;
+  description: string;
+  price: number;
+  rewardType: 'CONSISTENCY' | 'COMPLETION';
+  isEarned: boolean;
+  isClaimed: boolean;
+}
+
 @Component({
   selector: 'app-goal-details',
-  imports: [CommonModule],
+  imports: [CommonModule, CelebrationPopup],
   templateUrl: './goal-details.html',
   styleUrl: './goal-details.css'
 })
@@ -48,6 +68,11 @@ export class GoalDetails implements OnInit {
   checkIns: CheckIn[] = [];
   hasCheckedInToday = false;
   totalCheckIns = 0;
+
+  // Celebration
+  showCelebration = false;
+  celebrationMessage = '';
+  earnedRewards: WishlistItem[] = [];
 
   constructor(
     private http: HttpClient,
@@ -176,33 +201,49 @@ export class GoalDetails implements OnInit {
   }
 
   onCheckIn() {
-    if (this.hasCheckedInToday) {
-      return;
-    }
-
-    const userEmail = localStorage.getItem('email');
-    const today = new Date().toISOString().split('T')[0];
-
-    const checkInRequest = {
-      goalId: this.goalId,
-      checkInDate: today
-    };
-
-    this.http.post<CheckIn>('http://localhost:8080/api/checkins', checkInRequest, {
-      headers: { 'X-User-Email': userEmail! }
-    }).subscribe({
-      next: (response) => {
-        console.log('Checked in successfully!', response);
-        this.hasCheckedInToday = true;
-        this.loadGoalDetails(); // Reload to get updated streaks
-        this.loadCheckIns(); // Reload check-ins to update calendar
-      },
-      error: (error) => {
-        console.error('Check-in failed', error);
-        alert('Failed to check in. Please try again.');
-      }
-    });
+  if (this.hasCheckedInToday) {
+    return;
   }
+
+  const userEmail = localStorage.getItem('email');
+  const today = new Date().toISOString().split('T')[0];
+
+  const checkInRequest = {
+    goalId: this.goalId,
+    checkInDate: today
+  };
+
+  this.http.post<CheckIn>('http://localhost:8080/api/checkins', checkInRequest, {
+    headers: { 'X-User-Email': userEmail! }
+  }).subscribe({
+    next: (response) => {
+      console.log('Checked in successfully!', response);
+      this.hasCheckedInToday = true;
+      
+      // Check if celebration should trigger
+      if (response.celebrateConsistency && response.newlyEarnedRewards && response.newlyEarnedRewards.length > 0) {
+        // Filter out already claimed rewards
+        this.earnedRewards = response.newlyEarnedRewards.filter(r => !r.isClaimed);
+        
+        if (this.earnedRewards.length > 0) {
+          // Trigger confetti
+          this.triggerConfetti();
+          
+          // Show celebration popup
+          this.celebrationMessage = '🎉 You unlocked Consistency Rewards!';
+          this.showCelebration = true;
+        }
+      }
+      
+      this.loadGoalDetails(); // Reload to get updated streaks
+      this.loadCheckIns(); // Reload check-ins to update calendar
+    },
+    error: (error) => {
+      console.error('Check-in failed', error);
+      alert('Failed to check in. Please try again.');
+    }
+  });
+}
 
   previousMonth() {
     if (this.currentMonth === 0) {
@@ -248,4 +289,45 @@ export class GoalDetails implements OnInit {
   goBack() {
     this.router.navigate(['/goals']);
   }
+
+  triggerConfetti() {
+  // Confetti burst
+  const duration = 3000;
+  const animationEnd = Date.now() + duration;
+  
+  const interval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      return;
+    }
+
+    confetti({
+      particleCount: 3,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: ['#f093fb', '#f5576c', '#667eea', '#764ba2']
+    });
+    
+    confetti({
+      particleCount: 3,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: ['#f093fb', '#f5576c', '#667eea', '#764ba2']
+    });
+  }, 50);
+}
+
+onCelebrationClose() {
+  this.showCelebration = false;
+  this.earnedRewards = [];
+}
+
+onRewardClaimed() {
+  // Refresh goal details and wishlist
+  this.loadGoalDetails();
+}
 }

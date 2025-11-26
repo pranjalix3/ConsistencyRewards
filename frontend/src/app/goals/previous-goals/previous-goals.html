@@ -1,0 +1,66 @@
+<div class="previous-goals-container">
+  <div class="loading" *ngIf="loading">
+    Loading previous goals...
+  </div>
+
+  <div class="previous-goals-card" *ngIf="!loading">
+    <!-- Header -->
+    <div class="header">
+      <h2>📂 Previous Goals</h2>
+      <div class="header-actions">
+        <button class="back-btn" (click)="goBack()">← Back to Goals</button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="archivedGoals.length === 0">
+      <div class="empty-icon">📂</div>
+      <h3>No Previous Goals Yet</h3>
+      <p>Your archived goals from previous months will appear here.</p>
+      <button class="back-btn-large" (click)="goBack()">
+        Back to Active Goals
+      </button>
+    </div>
+
+    <!-- Grouped by Month -->
+    <div class="months-container" *ngIf="archivedGoals.length > 0">
+      <div class="month-section" *ngFor="let monthGroup of groupedGoals">
+        <div class="month-header">
+          <h3>{{ monthGroup.monthYear }}</h3>
+          <span class="goal-count">{{ monthGroup.goals.length }} goal(s)</span>
+        </div>
+
+        <div class="goals-grid">
+          <div class="archived-goal-card" *ngFor="let goal of monthGroup.goals">
+            <div class="goal-icon">
+              {{ goal.finalStreak >= 10 ? '🏆' : '📊' }}
+            </div>
+            
+            <h4>{{ goal.title }}</h4>
+            <p class="goal-description">{{ goal.description || 'No description' }}</p>
+
+            <div class="stats-row">
+              <div class="stat">
+                <span class="stat-label">Final Streak</span>
+                <span class="stat-value">{{ goal.finalStreak }} days 🔥</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Longest Streak</span>
+                <span class="stat-value">{{ goal.longestStreak }} days</span>
+              </div>
+            </div>
+
+            <div class="achievement-badge" *ngIf="goal.finalStreak >= 10">
+              <span class="badge-icon">🎉</span>
+              <span class="badge-text">Consistency Master!</span>
+            </div>
+
+            <div class="archived-date">
+              <small>Archived: {{ formatDate(goal.archivedAt) }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

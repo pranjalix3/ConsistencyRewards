@@ -1,0 +1,44 @@
+<div class="celebration-overlay" *ngIf="isVisible" (click)="onOverlayClick()">
+  <div class="celebration-popup" (click)="$event.stopPropagation()">
+    <!-- Celebration Header -->
+    <div class="celebration-header">
+      <div class="celebration-icon">🎉</div>
+      <h2>Congratulations!</h2>
+      <p class="celebration-message">{{ message }}</p>
+    </div>
+
+    <!-- Rewards List -->
+    <div class="rewards-container">
+      <h3>Your Earned Rewards:</h3>
+      
+      <div class="empty-rewards" *ngIf="rewards.length === 0">
+        <p>No new rewards to claim right now!</p>
+      </div>
+
+      <div class="rewards-list" *ngIf="rewards.length > 0">
+        <div class="reward-item" *ngFor="let reward of rewards">
+          <div class="reward-icon">🎁</div>
+          <div class="reward-details">
+            <h4>{{ reward.itemName }}</h4>
+            <p class="reward-description">{{ reward.description || 'No description' }}</p>
+            <div class="reward-price">₹{{ reward.price.toFixed(2) }}</div>
+            <span class="reward-type" [class.consistency]="reward.rewardType === 'CONSISTENCY'">
+              {{ reward.rewardType === 'CONSISTENCY' ? '🔥 Consistency Reward' : '🏆 Completion Reward' }}
+            </span>
+          </div>
+          <button 
+            class="claim-btn" 
+            (click)="onClaimReward(reward.id)"
+            [disabled]="claimingId === reward.id">
+            {{ claimingId === reward.id ? 'Claiming...' : 'Claim Now' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Close Button -->
+    <button class="close-btn" (click)="onClose()">
+      {{ rewards.length > 0 ? 'Claim Later' : 'Close' }}
+    </button>
+  </div>
+</div>

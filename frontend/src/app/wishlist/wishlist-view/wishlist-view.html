@@ -66,7 +66,7 @@
         <h3>{{ item.itemName }}</h3>
         <p class="item-description">{{ item.description || 'No description' }}</p>
         
-        <div class="item-price">${{ item.price.toFixed(2) }}</div>
+        <div class="item-price">₹{{ item.price.toFixed(2) }}</div>
         
         <div class="item-type">
           <span class="type-badge" [class.consistency]="item.rewardType === 'CONSISTENCY'">
